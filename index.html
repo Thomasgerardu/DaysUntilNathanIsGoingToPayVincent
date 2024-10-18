@@ -3,25 +3,87 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Countdown to December 31</title>
+    <title>When Pay?</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
+            font-family: Comic Sans MS, sans-serif; /* Comic Sans voor extra fun */
             text-align: center;
             padding: 50px;
+            background-color: #f0f8ff;
         }
         h1 {
             font-size: 3em;
+            color: #ff69b4;
+            animation: crazyText 1s infinite alternate-reverse ease-in-out;
         }
         #countdown {
-            font-size: 2em;
+            font-size: 2.5em;
             margin-top: 20px;
+            color: #4b0082;
+        }
+        .slider-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin: 50px auto;
+            height: 150px; /* Adjusted for bigger images */
+        }
+        .slider {
+            width: 100%;
+            height: 10px;
+            background-color: #8a2be2;
+            position: relative;
+        }
+        .image-right {
+            position: absolute;
+            top: -50px; /* Adjusted to match the bigger images */
+            width: 150px;
+            transition: transform 0.5s;
+            right: 0;
+        }
+        .image-right.shake {
+            animation: shake 0.5s infinite;
+        }
+        .mover {
+            position: absolute;
+            top: -50px;
+            width: 150px;
+            transition: left 1s, transform 1s;
+        }
+        .mover.bounce {
+            animation: bounce 0.5s infinite;
+        }
+        @keyframes crazyText {
+            from { color: #ff4500; }
+            to { color: #ff69b4; }
+        }
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            50% { transform: translateX(10px); }
+            75% { transform: translateX(-5px); }
+        }
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
         }
     </style>
 </head>
 <body>
-    <h1>Countdown to December 31</h1>
+    <h1>When is Nathan going to pay Vincent because of the lost bet?</h1>
     <div id="countdown"></div>
+
+    <div class="slider-container">
+        <div class="slider">
+            <!-- Moving image -->
+            <img src="Nathan.png" alt="Moving Image" class="mover" id="mover">
+            <!-- Static image on the right -->
+            <img src="Vincent.jpg" alt="Right Image" class="image-right" id="right-image">
+        </div>
+    </div>
+
+    <audio id="fun-sound" src="https://www.soundjay.com/button/sounds/button-3.mp3"></audio> <!-- Fun sound effect -->
+    <audio id="explosion-sound" src="https://www.soundjay.com/explosion/sounds/explosion-04.mp3"></audio>
 
     <script>
         function updateCountdown() {
@@ -30,8 +92,32 @@
             const timeLeft = targetDate - now;
 
             const days = Math.floor(timeLeft / (1000 * 60 * 60 * 24));
+            const totalDays = Math.floor((targetDate - new Date('September 1, 2024').getTime()) / (1000 * 60 * 60 * 24));
 
-            document.getElementById('countdown').innerText = `${days} days left until Nathan is going to pay Vincent for the lost bet!`;
+            // Update the countdown text
+            document.getElementById('countdown').innerText = `${days}  days left :)`;
+
+            // Calculate the position of the moving image based on remaining days
+            const sliderWidth = document.querySelector('.slider').offsetWidth - 150; // Subtract the width of the image
+            const position = (1 - (days / totalDays)) * sliderWidth; // Moving from left (0) to right (sliderWidth)
+
+            // Update the position of the moving image
+            const mover = document.getElementById('mover');
+            mover.style.left = `${position}px`;
+
+            // Add crazy animations when we're close to the end
+            if (days < 10) {
+                document.getElementById('right-image').classList.add('shake');
+                mover.classList.add('bounce');
+                document.getElementById('fun-sound').play(); // Play a fun sound effect when close
+            }
+
+            // When the collision happens
+            if (days === 0) {
+                mover.style.transform = 'scale(2)';
+                document.getElementById('explosion-sound').play(); // Play explosion sound
+                document.getElementById('right-image').style.transform = 'rotate(360deg)';
+            }
         }
 
         updateCountdown();
