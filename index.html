@@ -91,13 +91,17 @@
             const now = new Date().getTime();
             const timeLeft = targetDate - now;
 
+            // Calculate days, hours, minutes, and seconds left
             const days = Math.floor(timeLeft / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((timeLeft % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((timeLeft % (1000 * 60)) / 1000);
+
+            // Display the countdown in the format: "Days:Hours:Minutes:Seconds"
+            document.getElementById('countdown').innerText = `${days}d ${hours}h ${minutes}m ${seconds}s left until the transfer of the wealth!`;
+
+            // Calculate the total days and position of the moving image based on remaining days
             const totalDays = Math.floor((targetDate - new Date('September 1, 2024').getTime()) / (1000 * 60 * 60 * 24));
-
-            // Update the countdown text
-            document.getElementById('countdown').innerText = `${days}  days left :)`;
-
-            // Calculate the position of the moving image based on remaining days
             const sliderWidth = document.querySelector('.slider').offsetWidth - 150; // Subtract the width of the image
             const position = (1 - (days / totalDays)) * sliderWidth; // Moving from left (0) to right (sliderWidth)
 
@@ -113,7 +117,7 @@
             }
 
             // When the collision happens
-            if (days === 0) {
+            if (days === 0 && hours === 0 && minutes === 0 && seconds === 0) {
                 mover.style.transform = 'scale(2)';
                 document.getElementById('explosion-sound').play(); // Play explosion sound
                 document.getElementById('right-image').style.transform = 'rotate(360deg)';
@@ -121,7 +125,7 @@
         }
 
         updateCountdown();
-        setInterval(updateCountdown, 1000 * 60 * 60 * 24); // Update every 24 hours
+        setInterval(updateCountdown, 1000); // Update every second
     </script>
 </body>
 </html>
